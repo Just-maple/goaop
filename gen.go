@@ -18,14 +18,14 @@ const aopTemplate = `
 // {{ .Name }}
 type {{ .Name }} struct {
 	Origin {{ .Type }}
-	InterceptorFactory aop.InterceptorFactory
+	InterceptorFactory goaop.InterceptorFactory
 }
 
 func init(){
-	aop.RegisterInterceptorProxy("{{ .Name }}",{{ .Name }}{})
+	goaop.RegisterInterceptorProxy("{{ .Name }}",{{ .Name }}{})
 }
 
-func (this {{ .Name }}) RegisterInterceptor(origin interface{}, inceptorFactory aop.InterceptorFactory) interface{} {
+func (this {{ .Name }}) RegisterInterceptor(origin interface{}, inceptorFactory goaop.InterceptorFactory) interface{} {
 	return &{{ .Name }}{
 		Origin:       origin.({{ .Type }}),
 		InterceptorFactory: inceptorFactory,
@@ -34,7 +34,7 @@ func (this {{ .Name }}) RegisterInterceptor(origin interface{}, inceptorFactory 
 
 {{ range $Method := .Methods}}
 func (this *{{ $.Name }}) {{ $Method.Name }}({{ range $i,$v := .Param }}param_{{ $i }} {{ $v }},{{ end }}) ({{ .Ret }}){
-	interceptor,ok := this.InterceptorFactory.InitInterceptor(&aop.JoinPoint{
+	interceptor,ok := this.InterceptorFactory.InitInterceptor(&goaop.JoinPoint{
 		Method: this.Origin.{{ $Method.Name }},
 		Params: []interface{}{ {{ range $i,$_ := .Param }} &param_{{ $i }},{{ end }} },
 		Returns: []interface{}{ {{ range $i,$_ := .Return }} &ret_{{ $i }},{{ end }} },
@@ -149,7 +149,7 @@ func (p *parser) gen(path string) (err error) {
 			return
 		}
 		_ = os.MkdirAll(filepath.Dir(path), 0775)
-		err = ioutil.WriteFile(filepath.Join(path, k+".aop.go"), importsBytes, 0664)
+		err = ioutil.WriteFile(filepath.Join(path, k+".goaop.go"), importsBytes, 0664)
 		if err != nil {
 			return
 		}
