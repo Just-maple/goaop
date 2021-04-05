@@ -1,4 +1,4 @@
-// +build aopgen
+// +build goaop
 
 package goaop
 
