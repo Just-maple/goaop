@@ -148,7 +148,7 @@ func (p *parser) gen(path string) (err error) {
 		if err != nil {
 			return
 		}
-		_ = os.MkdirAll(filepath.Dir(path), 0775)
+		_ = os.MkdirAll(path, 0775)
 		err = ioutil.WriteFile(filepath.Join(path, k+".goaop.go"), importsBytes, 0664)
 		if err != nil {
 			return
